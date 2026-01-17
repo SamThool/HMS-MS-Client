@@ -388,12 +388,21 @@ const navByTeam = {
     { title: "Service Group", url: "/db/service-group", icon: Hash },
     { title: "Service Detail", url: "/db/service-detail", icon: Hash },
     { title: "Service Rate", url: "/db/service-rate", icon: Hash },
+    { title: "Bill Group", url: "/db/bill-group", icon: Hash },
     { title: "TPA", url: "/db/tpa", icon: Hash },
     { title: "GIPSAA", url: "/db/gipsaa", icon: Hash },
     { title: "INSURANCE", url: "/db/insurance", icon: Hash },
     { title: "Goverment Company", url: "/db/goverment-company", icon: Hash },
-    { title: "Corporate Company Public", url: "/db/corporate-company-public", icon: Hash },
-    { title: "Corporate Company Private", url: "/db/corporate-company-private", icon: Hash },
+    {
+      title: "Corporate Company Public",
+      url: "/db/corporate-company-public",
+      icon: Hash,
+    },
+    {
+      title: "Corporate Company Private",
+      url: "/db/corporate-company-private",
+      icon: Hash,
+    },
   ],
 };
 
