@@ -103,6 +103,7 @@ const ServiceRatePage = () => {
         services: form.services.map((s) => ({
           service: s.service,
           price: parseFloat(s.price),
+          service_code: s.service_code,
         })),
       };
 
@@ -126,7 +127,10 @@ const ServiceRatePage = () => {
   const handleAddService = () => {
     setForm((prev) => ({
       ...prev,
-      services: [...prev.services, { service: "", price: "" }],
+      services: [
+        ...prev.services,
+        { service: "", price: "", service_code: "" },
+      ],
     }));
   };
 
@@ -157,6 +161,7 @@ const ServiceRatePage = () => {
         ? item.services.map((s) => ({
             service: typeof s.service === "object" ? s.service._id : s.service,
             price: s.price || "",
+            service_code: s.service_code || "",
           }))
         : [],
     });
@@ -196,9 +201,8 @@ const ServiceRatePage = () => {
         <TableHeader>
           <TableRow>
             <TableHead>SN</TableHead>
-            <TableHead>Rate Name</TableHead>
+            <TableHead>Rate List Name</TableHead>
             <TableHead>Services Count</TableHead>
-            <TableHead>Services</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -220,27 +224,7 @@ const ServiceRatePage = () => {
                 <TableCell>{i + 1}</TableCell>
                 <TableCell>{d.name}</TableCell>
                 <TableCell>{d.services?.length || 0}</TableCell>
-                <TableCell>
-                  <div className="max-w-md">
-                    {d.services && d.services.length > 0 ? (
-                      <div className="space-y-1 text-sm">
-                        {d.services.map((svc, idx) => (
-                          <div key={idx}>
-                            <span className="font-medium">
-                              {typeof svc.service === "object"
-                                ? svc.service?.serviceName || "-"
-                                : "-"}
-                            </span>
-                            {" - ₹"}
-                            <span>{svc.price || 0}</span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      "-"
-                    )}
-                  </div>
-                </TableCell>
+
                 <TableCell className="flex gap-2">
                   <Button
                     size="sm"
