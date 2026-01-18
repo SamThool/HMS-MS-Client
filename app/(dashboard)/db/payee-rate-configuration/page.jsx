@@ -62,8 +62,7 @@ const PayeeRateConfigurationPage = () => {
     try {
       const [configData, categoriesData, rateListsData, insuranceData] =
         await Promise.all([
-          get("/insurance-company").catch(() => []),
-          //   get("/payee-rate-configuration").catch(() => []),
+          get("/payee-rate-configuration").catch(() => []),
           get("/payee-category").catch(() => []),
           get("/service-rate").catch(() => []),
           get("/insurance-company").catch(() => []), // For insurance companies
@@ -104,7 +103,25 @@ const PayeeRateConfigurationPage = () => {
       setParentPayees(parentPayeesArray);
 
       // Initialize rows with existing data if needed
-      // ... existing row initialization code ...
+      // Initialize rows with existing data
+      const fetchedData = Array.isArray(configData?.data)
+        ? configData.data
+        : Array.isArray(configData)
+        ? configData
+        : [];
+
+      if (fetchedData.length > 0) {
+        // Convert fetched data into rows format
+        const initialRows = fetchedData.map((item, index) => ({
+          id: item._id || Date.now() + index,
+          _id: item._id, // Preserve _id for updates
+          category: item.Category?._id || item.Category,
+          parentPayee: item.ParentPayee || undefined,
+          payee: item.Payee || undefined,
+          rateList: item.rateList?._id || item.rateList,
+        }));
+        setRows(initialRows);
+      }
     } catch (error) {
       console.error("Fetch error:", error);
       setData([]);
@@ -153,19 +170,6 @@ const PayeeRateConfigurationPage = () => {
       prev.map((row) => {
         if (row.id === id) {
           const newValue = value || undefined;
-          // If clearing parentPayee, also clear payee
-          if (field === "parentPayee" && !newValue) {
-            return { ...row, [field]: newValue, payee: undefined };
-          }
-          // If clearing category, also clear parentPayee and payee
-          if (field === "category" && !newValue) {
-            return {
-              ...row,
-              [field]: newValue,
-              parentPayee: undefined,
-              payee: undefined,
-            };
-          }
           return { ...row, [field]: newValue };
         }
         return row;
@@ -311,15 +315,14 @@ const PayeeRateConfigurationPage = () => {
                       onValueChange={(value) =>
                         handleRowChange(row.id, "parentPayee", value)
                       }
-                      disabled={!row.category}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select ParentPayee" />
                       </SelectTrigger>
                       <SelectContent>
-                        {getFilteredParentPayees(row.category).map((pp) => (
-                          <SelectItem key={pp._id} value={pp._id}>
-                            {pp.Payee?.name || pp.name || "Unnamed"}
+                        {parentPayees.map((company) => (
+                          <SelectItem key={company._id} value={company._id}>
+                            {company.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -329,21 +332,23 @@ const PayeeRateConfigurationPage = () => {
                   {/* Payee Dropdown */}
                   <TableCell>
                     <Select
-                      value={row.payee || undefined}
+                      value={row.payee || "tpa"}
                       onValueChange={(value) =>
                         handleRowChange(row.id, "payee", value)
                       }
-                      disabled={!row.parentPayee}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select Payee" />
                       </SelectTrigger>
                       <SelectContent>
-                        {getFilteredPayees(row.parentPayee).map((p) => (
+                        {/* {payees.map((p) => (
                           <SelectItem key={p._id} value={p._id}>
-                            {p.Payee?.name || p.name || "Unnamed"}
+                            {p.name || "Unnamed"}
                           </SelectItem>
-                        ))}
+                        ))} */}
+                        <SelectItem key="tpa" value="tpa">
+                          TPA
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </TableCell>
