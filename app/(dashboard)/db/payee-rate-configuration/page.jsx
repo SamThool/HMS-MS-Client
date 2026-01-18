@@ -60,13 +60,19 @@ const PayeeRateConfigurationPage = () => {
   const fetchAll = async () => {
     setLoading(true);
     try {
-      const [configData, categoriesData, rateListsData, insuranceData] =
-        await Promise.all([
-          get("/payee-rate-configuration").catch(() => []),
-          get("/payee-category").catch(() => []),
-          get("/service-rate").catch(() => []),
-          get("/insurance-company").catch(() => []), // For insurance companies
-        ]);
+      const [
+        configData,
+        categoriesData,
+        tpaData,
+        rateListsData,
+        insuranceData,
+      ] = await Promise.all([
+        get("/payee-rate-configuration").catch(() => []),
+        get("/payee-category").catch(() => []),
+        get("/tpa").catch(() => []),
+        get("/service-rate").catch(() => []),
+        get("/insurance-company").catch(() => []), // For insurance companies
+      ]);
 
       // Set main data
       setData(
@@ -93,6 +99,13 @@ const PayeeRateConfigurationPage = () => {
           ? rateListsData
           : []
       );
+
+      const payeeDAta = Array.isArray(tpaData?.data)
+        ? tpaData.data
+        : Array.isArray(tpaData)
+        ? tpaData
+        : [];
+      setPayees(payeeDAta);
 
       // Set insurance companies for parentPayee dropdown
       const parentPayeesArray = Array.isArray(insuranceData?.data)
@@ -226,22 +239,6 @@ const PayeeRateConfigurationPage = () => {
     }
   };
 
-  // Filter parent payees based on category
-  const getFilteredParentPayees = (categoryId) => {
-    if (!categoryId) return [];
-    return parentPayees.filter(
-      (p) => (p.Category?._id || p.Category) === categoryId
-    );
-  };
-
-  // Filter payees based on parent payee
-  const getFilteredPayees = (parentPayeeId) => {
-    if (!parentPayeeId) return [];
-    return payees.filter(
-      (p) => (p.ParentPayee?._id || p.ParentPayee) === parentPayeeId
-    );
-  };
-
   return (
     <div className="p-4">
       {/* HEADER */}
@@ -332,7 +329,7 @@ const PayeeRateConfigurationPage = () => {
                   {/* Payee Dropdown */}
                   <TableCell>
                     <Select
-                      value={row.payee || "tpa"}
+                      value={row.payee || undefined}
                       onValueChange={(value) =>
                         handleRowChange(row.id, "payee", value)
                       }
@@ -341,14 +338,11 @@ const PayeeRateConfigurationPage = () => {
                         <SelectValue placeholder="Select Payee" />
                       </SelectTrigger>
                       <SelectContent>
-                        {/* {payees.map((p) => (
+                        {payees.map((p) => (
                           <SelectItem key={p._id} value={p._id}>
                             {p.name || "Unnamed"}
                           </SelectItem>
-                        ))} */}
-                        <SelectItem key="tpa" value="tpa">
-                          TPA
-                        </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </TableCell>
