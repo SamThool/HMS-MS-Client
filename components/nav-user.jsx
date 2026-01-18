@@ -7,6 +7,7 @@ import {
   CreditCard,
   LogOut,
   KeyRound,
+  Palette,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -107,6 +108,10 @@ export function NavUser({ user }) {
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
+            <DropdownMenuItem onClick={() => router.push("/auth/theme")}>
+              <Palette />
+              Change Theme
+            </DropdownMenuItem>
 
             <DropdownMenuSeparator />
 

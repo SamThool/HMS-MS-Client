@@ -30,6 +30,7 @@ import {
   CalendarPlus,
   ClipboardList,
   IndianRupee,
+  LayoutDashboardIcon,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -60,42 +61,42 @@ const data = {
       plan: "57 Patients",
       no: "57",
     },
-    // {
-    //   name: "IPD",
-    //   logo: Users,
-    //   plan: "15 Patients",
-    //   no: "15",
-    // },
-    // {
-    //   name: "EMERGENCY",
-    //   logo: Ambulance,
-    //   plan: "5 Patients",
-    //   no: "5",
-    // },
-    // {
-    //   name: "DAYCARE",
-    //   logo: CalendarDays,
-    //   plan: "52 Patients",
-    //   no: "52",
-    // },
-    // {
-    //   name: "WALKIN",
-    //   logo: Footprints,
-    //   plan: "67 Patients",
-    //   no: "67",
-    // },
-    // {
-    //   name: "PHARMACY",
-    //   logo: Pill,
-    //   plan: "123 Patients",
-    //   no: "123",
-    // },
-    // {
-    //   name: "DIAGNOSIS",
-    //   logo: FlaskConical,
-    //   plan: "123 Patients",
-    //   no: "123",
-    // },
+    {
+      name: "IPD",
+      logo: Users,
+      plan: "15 Patients",
+      no: "15",
+    },
+    {
+      name: "EMERGENCY",
+      logo: Ambulance,
+      plan: "5 Patients",
+      no: "5",
+    },
+    {
+      name: "DAYCARE",
+      logo: CalendarDays,
+      plan: "52 Patients",
+      no: "52",
+    },
+    {
+      name: "WALKIN",
+      logo: Footprints,
+      plan: "67 Patients",
+      no: "67",
+    },
+    {
+      name: "PHARMACY",
+      logo: Pill,
+      plan: "123 Patients",
+      no: "123",
+    },
+    {
+      name: "DIAGNOSIS",
+      logo: FlaskConical,
+      plan: "123 Patients",
+      no: "123",
+    },
     {
       name: "MASTER",
       logo: Settings,
@@ -160,60 +161,7 @@ const data = {
     },
   ],
 
-  projects: [
-    // General / Reference Masters
-    { name: "User", url: "/hr/user", icon: Hash },
-    { name: "Prefixes", url: "/master/refs/prefixes", icon: Hash },
-    { name: "Hospital", url: "/master/catalog/hospitals", icon: Hospital },
-    { name: "Department", url: "/master/org/department", icon: Building },
-    {
-      name: "Sub Department",
-      url: "/master/org/sub-departments",
-      icon: Layers,
-    },
-    {
-      name: "Department Type",
-      url: "/master/org/department-type",
-      icon: Tags,
-    },
-    {
-      name: "Department Sub Type",
-      url: "/master/org/department-sub-type",
-      icon: Shapes,
-    },
-
-    // Education / Qualifications
-    {
-      name: "Diploma",
-      url: "/master/education/qualifications/diploma",
-      icon: FileText,
-    },
-    {
-      name: "Graduation",
-      url: "/master/education/qualifications/graduation",
-      icon: GraduationCap,
-    },
-    {
-      name: "Post Graduation",
-      url: "/master/education/qualifications/post-graduation",
-      icon: Award,
-    },
-    {
-      name: "Super Speciality",
-      url: "/master/education/specialities",
-      icon: Stethoscope,
-    },
-    {
-      name: "Regulatory Councils",
-      url: "/master/education/councils",
-      icon: BookOpen,
-    },
-
-    // HR / User Management
-    { name: "Users", url: "/hr/users", icon: Users },
-    { name: "Employee Role", url: "/master/roles", icon: Briefcase },
-    { name: "Designation", url: "/general-setup/designation", icon: Tag },
-  ],
+  projects: [{ name: "Dashboard", url: "/", icon: LayoutDashboardIcon }],
 };
 const navByTeam = {
   OPD: [
@@ -260,6 +208,16 @@ const navByTeam = {
       title: "EMR",
       url: "/emr",
       icon: FileText,
+      items: [
+        // { title: "Company", url: "/hr/company" },
+        // { title: "User", url: "/hr/user" },
+        // { title: "Department", url: "/general-setup/department" },
+      ],
+    },
+    {
+      title: "Reports",
+      url: "/reports",
+      icon: BarChart3,
       items: [
         // { title: "Company", url: "/hr/company" },
         // { title: "User", url: "/hr/user" },
@@ -389,7 +347,11 @@ const navByTeam = {
     { title: "Bill Group", url: "/db/bill-group", icon: Hash },
     { title: "Service List", url: "/db/service-list", icon: Hash },
     { title: "Service Rate", url: "/db/service-rate", icon: Hash },
-    { title: "Payee Rate Configuration", url: "/db/payee-rate-configuration", icon: Hash },
+    {
+      title: "Payee Rate Configuration",
+      url: "/db/payee-rate-configuration",
+      icon: Hash,
+    },
     { title: "TPA", url: "/db/tpa", icon: Hash },
     { title: "GIPSAA", url: "/db/gipsaa", icon: Hash },
     { title: "INSURANCE", url: "/db/insurance", icon: Hash },
@@ -418,10 +380,10 @@ export function AppSidebar({ ...props }) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
+        <NavProjects projects={data.projects} />
         <NavMain items={navByTeam[activeTeam] || []} />
 
         {/* <NavMain items={data.navMain} /> */}
-        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

@@ -35,8 +35,25 @@ export default function RootLayout({ children }) {
 
   // ⏳ Optional: show nothing (or a loader) while checking auth
 
+  const themeScript = `
+    (function () {
+      try {
+        const theme = localStorage.getItem("app-theme") || "theme6";
+        const dark = localStorage.getItem("app-dark") === "true";
+
+        const root = document.documentElement;
+        root.setAttribute("data-theme", theme);
+        if (dark) root.classList.add("dark");
+        else root.classList.remove("dark");
+      } catch (e) {}
+    })();
+  `;
+
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>
         <ThemeProvider
           attribute="class"

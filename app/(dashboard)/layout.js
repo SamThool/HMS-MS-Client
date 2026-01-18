@@ -12,10 +12,12 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { NotificationButton } from "@/components/notification-button";
 import { LockScreenButton } from "@/components/lock-screen-button";
 import { motion, AnimatePresence } from "framer-motion";
+import { HeaderSearchButton } from "@/components/header/search-button";
+import { CommandMenu } from "@/components/header/command-menu";
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
-
+  const [open, setOpen] = React.useState(false);
   // ✅ Memoize the sidebar so it’s not recreated on every route change
   const memoizedSidebar = useMemo(() => <AppSidebar />, []);
 
@@ -29,6 +31,14 @@ export default function DashboardLayout({ children }) {
             HMS Made Simplified
           </div>
           <div className="flex items-center gap-2">
+            {/* Header content */}
+            {/* <div className="flex items-center gap-2"> */}
+            <HeaderSearchButton onOpen={() => setOpen(true)} />
+            {/* </div> */}
+
+            {/* Command Palette */}
+            <CommandMenu open={open} setOpen={setOpen} />
+
             <ThemeToggle />
             <NotificationButton />
             <LockScreenButton />
