@@ -386,7 +386,7 @@ const navByTeam = {
     { title: "Payment Mode", url: "/db/payment-mode", icon: Hash },
     { title: "Payee Category", url: "/db/payee-category", icon: Hash },
     { title: "Service Group", url: "/db/service-group", icon: Hash },
-    { title: "Service Detail", url: "/db/service-detail", icon: Hash },
+    { title: "Service List", url: "/db/service-list", icon: Hash },
     { title: "Service Rate", url: "/db/service-rate", icon: Hash },
     { title: "Bill Group", url: "/db/bill-group", icon: Hash },
     { title: "TPA", url: "/db/tpa", icon: Hash },

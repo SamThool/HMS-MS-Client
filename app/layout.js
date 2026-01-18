@@ -34,7 +34,6 @@ export default function RootLayout({ children }) {
   }, [router, pathname]);
 
   // ⏳ Optional: show nothing (or a loader) while checking auth
-  if (isCheckingAuth) return null;
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -46,7 +45,8 @@ export default function RootLayout({ children }) {
           disableTransitionOnChange
         >
           <Provider store={store}>
-            <>{children}</>
+            {isCheckingAuth ? null : children}
+            {/* <>{children}</> */}
           </Provider>
           <Toaster position="top-right" richColors />
         </ThemeProvider>
