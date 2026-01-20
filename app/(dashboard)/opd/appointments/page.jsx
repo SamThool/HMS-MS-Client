@@ -40,6 +40,7 @@ import {
   Calendar as CalendarIcon,
   Trash2,
   CheckCircle2,
+  Phone,
 } from "lucide-react";
 import { toast } from "sonner";
 import { get, post } from "@/lib/api";
@@ -107,6 +108,10 @@ export default function Page() {
     country: "India",
     maritalStatus: "",
   });
+
+  const [followUpQuery, setFollowUpQuery] = useState("");
+  const [followUpResults, setFollowUpResults] = useState([]);
+  const [selectedFollowUpPatient, setSelectedFollowUpPatient] = useState(null);
 
   /* ---------------- FETCH ---------------- */
 
@@ -268,6 +273,25 @@ export default function Page() {
   useEffect(() => {
     fetchInitial();
   }, []);
+
+  useEffect(() => {
+    if (!followUpQuery || followUpQuery.length < 2) {
+      setFollowUpResults([]);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        const res = await get(`/uhid/search?q=${followUpQuery}`);
+        setFollowUpResults(res.data || []);
+      } catch {
+        setFollowUpResults([]);
+      }
+    }, 300); // debounce
+
+    return () => clearTimeout(timer);
+  }, [followUpQuery]);
+
   return (
     <div className="p-4 space-y-4">
       {/* TABLE */}
@@ -510,18 +534,64 @@ export default function Page() {
 
                 {/* EXISTING */}
                 <TabsContent value="existing">
-                  <Select value={selectedUHID} onValueChange={setSelectedUHID}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select UHID" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {uhids.map((u) => (
-                        <SelectItem key={u._id} value={u._id}>
-                          {u.uhid} – {u.fname} {u.lname}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      Search Patient
+                    </label>
+
+                    <div className="relative">
+                      <Input
+                        placeholder="Search by name or UHID..."
+                        value={followUpQuery}
+                        onChange={(e) => setFollowUpQuery(e.target.value)}
+                      />
+
+                      {followUpResults.length > 0 && (
+                        <div className="absolute z-50 mt-1 w-full rounded-md border bg-background shadow-md">
+                          {followUpResults.map((p) => (
+                            <button
+                              key={p._id}
+                              type="button"
+                              className="w-full px-3 py-2 text-left hover:bg-accent"
+                              onClick={() => {
+                                setSelectedUHID(p._id);
+                                setSelectedFollowUpPatient(p);
+                                setFollowUpQuery(
+                                  `${p.uhid} – ${p.fname} ${p.lname}`,
+                                );
+                                setFollowUpResults([]);
+                              }}
+                            >
+                              <div className="font-medium">
+                                {p.fname} {p.lname}
+                              </div>
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <span>#{p.uhid}</span>
+                                <span className="flex items-center gap-1">
+                                  <Phone className="h-3.5 w-3.5" />
+                                  {p.mobileNumber}
+                                </span>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Selected patient preview */}
+                    {selectedFollowUpPatient && (
+                      <div className="rounded-md border p-3 text-sm">
+                        <p className="font-medium">
+                          {selectedFollowUpPatient.fname}{" "}
+                          {selectedFollowUpPatient.lname}
+                        </p>
+                        <p className="text-muted-foreground text-xs">
+                          UHID: {selectedFollowUpPatient.uhid} • 📞{" "}
+                          {selectedFollowUpPatient.mobileNumber}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </TabsContent>
               </Tabs>
 
