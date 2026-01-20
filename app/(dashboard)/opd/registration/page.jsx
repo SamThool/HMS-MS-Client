@@ -17,6 +17,12 @@ import { get, post } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function Page() {
   const [opds, setOpds] = useState([]);
@@ -121,7 +127,7 @@ export default function Page() {
                 <TableHead>Category</TableHead>
                 <TableHead>Payment</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead className="text-center">Action</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -183,29 +189,53 @@ export default function Page() {
                   </TableCell>
 
                   {/* Action */}
-                  <TableCell className="text-right space-x-2">
-                    {o.status === "wait" && (
-                      <Button size="icon" variant="outline">
-                        <LogIn className="h-4 w-4" />
-                      </Button>
-                    )}
+                  <TableCell className="text-center">
+                    <TooltipProvider>
+                      <div className="flex justify-center gap-2">
+                        {/* IN */}
+                        {o.status === "wait" && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button size="icon" variant="outline">
+                                <LogIn className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top">Mark IN</TooltipContent>
+                          </Tooltip>
+                        )}
 
-                    {o.status === "in" && (
-                      <Button size="icon" variant="outline">
-                        <LogOut className="h-4 w-4" />
-                      </Button>
-                    )}
-                    <Button size="icon" variant="outline">
-                      <LogOut className="h-4 w-4" />
-                    </Button>
+                        {/* OUT */}
 
-                    <Button size="icon" variant="secondary">
-                      <Receipt className="h-4 w-4" />
-                    </Button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button size="icon" variant="outline">
+                              <LogOut className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">Mark OUT</TooltipContent>
+                        </Tooltip>
 
-                    <Button size="icon" variant="secondary">
-                      <FileText className="h-4 w-4" />
-                    </Button>
+                        {/* Billing */}
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button size="icon" variant="secondary">
+                              <Receipt className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">Billing</TooltipContent>
+                        </Tooltip>
+
+                        {/* EMR */}
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button size="icon" variant="secondary">
+                              <FileText className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">Open EMR</TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </TooltipProvider>
                   </TableCell>
                 </TableRow>
               ))}

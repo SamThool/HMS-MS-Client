@@ -206,7 +206,7 @@ const navByTeam = {
     },
     {
       title: "EMR",
-      url: "/emr",
+      url: "/opd-emr",
       icon: FileText,
       items: [
         // { title: "Company", url: "/hr/company" },

@@ -43,7 +43,7 @@ import {
   Phone,
 } from "lucide-react";
 import { toast } from "sonner";
-import { get, post } from "@/lib/api";
+import { del, get, post } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { format, set } from "date-fns";
 import {
@@ -112,6 +112,8 @@ export default function Page() {
   const [followUpQuery, setFollowUpQuery] = useState("");
   const [followUpResults, setFollowUpResults] = useState([]);
   const [selectedFollowUpPatient, setSelectedFollowUpPatient] = useState(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [appointmentToDelete, setAppointmentToDelete] = useState(null);
 
   /* ---------------- FETCH ---------------- */
 
@@ -267,6 +269,33 @@ export default function Page() {
       fetchInitial();
     } catch {
       toast.error("Failed to book appointment");
+    }
+  };
+
+  const handleDeleteAppointment = async () => {
+    try {
+      if (!appointmentToDelete) return;
+
+      // const response = await fetch(
+      //   `/api/appointment/${appointmentToDelete._id}`,
+      //   {
+      //     method: "DELETE",
+      //   },
+      // );
+
+      // if (!response.ok) {
+      //   throw new Error("Failed to delete");
+      // }
+
+      await del(`/appointment/${appointmentToDelete._id}`);
+
+      toast.success("Appointment deleted successfully");
+      setDeleteOpen(false);
+      setAppointmentToDelete(null);
+      fetchInitial(); // Refresh the list
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete appointment");
     }
   };
 
@@ -784,6 +813,65 @@ export default function Page() {
           </DialogContent>
         </Dialog>
 
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Delete Appointment</DialogTitle>
+            </DialogHeader>
+
+            {appointmentToDelete && (
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Are you sure you want to delete this appointment?
+                </p>
+
+                <div className="rounded-md border p-3 text-sm bg-muted/50">
+                  <p>
+                    <span className="font-medium">Patient:</span>{" "}
+                    {appointmentToDelete.uhid?.fname}{" "}
+                    {appointmentToDelete.uhid?.mname}{" "}
+                    {appointmentToDelete.uhid?.lname}
+                  </p>
+                  <p className="text-muted-foreground text-xs mt-1">
+                    <span className="font-medium">Doctor:</span>{" "}
+                    {appointmentToDelete.consultant?.firstName}{" "}
+                    {appointmentToDelete.consultant?.lastName}
+                  </p>
+                  <p className="text-muted-foreground text-xs">
+                    <span className="font-medium">Department:</span>{" "}
+                    {appointmentToDelete.department?.departmentName}
+                  </p>
+                  <p className="text-muted-foreground text-xs">
+                    <span className="font-medium">Date:</span>{" "}
+                    {format(
+                      new Date(appointmentToDelete.appointmentDate),
+                      "dd/MM/yyyy",
+                    )}{" "}
+                    • <span className="font-medium">Slot:</span>{" "}
+                    {appointmentToDelete.slot}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-end gap-2 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDeleteOpen(false);
+                  setAppointmentToDelete(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={handleDeleteAppointment}>
+                Delete Appointment
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* APPOINTMENT TABLE */}
         <Table>
           <TableHeader>
@@ -843,6 +931,10 @@ export default function Page() {
                             variant="destructive"
                             size="icon"
                             className="h-8 w-8"
+                            onClick={() => {
+                              setAppointmentToDelete(a);
+                              setDeleteOpen(true);
+                            }}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
