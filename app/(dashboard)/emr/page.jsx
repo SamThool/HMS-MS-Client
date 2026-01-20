@@ -447,7 +447,7 @@ const PatientInfoPage = () => {
                   Last Visit: {patientData.lastVisit}
                 </Badge>
                 <Badge variant="secondary" className="text-xs">
-                  Dr: {patientData.physician}
+                  Consultant: {patientData.physician}
                 </Badge>
               </div>
             </div>

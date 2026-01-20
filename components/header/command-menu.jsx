@@ -10,6 +10,7 @@ import {
   CommandEmpty,
 } from "@/components/ui/command";
 import { User, Phone, Hash, Calendar } from "lucide-react";
+import { get } from "@/lib/api";
 
 export function CommandMenu({ open, setOpen }) {
   // Ctrl / Cmd + K handler
@@ -25,38 +26,33 @@ export function CommandMenu({ open, setOpen }) {
   }, [setOpen]);
 
   // Mock patient data - replace with your actual data
-  const patients = [
-    {
-      id: "PT001",
-      name: "Sarah Johnson",
-      phone: "+1 234-567-8901",
-      lastVisit: "2026-01-15",
-    },
-    {
-      id: "PT002",
-      name: "Michael Chen",
-      phone: "+1 234-567-8902",
-      lastVisit: "2026-01-14",
-    },
-    {
-      id: "PT003",
-      name: "Emily Rodriguez",
-      phone: "+1 234-567-8903",
-      lastVisit: "2026-01-13",
-    },
-    {
-      id: "PT004",
-      name: "James Williams",
-      phone: "+1 234-567-8904",
-      lastVisit: "2026-01-12",
-    },
-    {
-      id: "PT005",
-      name: "Priya Patel",
-      phone: "+1 234-567-8905",
-      lastVisit: "2026-01-11",
-    },
-  ];
+  const [query, setQuery] = React.useState("");
+  const [results, setResults] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!query || query.length < 2) {
+      setResults([]);
+      return;
+    }
+
+    const timeout = setTimeout(async () => {
+      try {
+        console.log("Searching OPD:", query); // 👈 DEBUG
+        setLoading(true);
+        const res = await get(`/opd/search?q=${query}`);
+        console.log("Search result:", res);
+        setResults(res || []);
+      } catch (err) {
+        console.error("Search error:", err);
+        setResults([]);
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [query]);
 
   const handleSelectPatient = (patient) => {
     console.log("Selected patient:", patient);
@@ -78,49 +74,63 @@ export function CommandMenu({ open, setOpen }) {
       onOpenChange={setOpen}
     >
       <CommandInput
-        placeholder="Search by patient name, ID, or phone number..."
-        className="text-base"
+        placeholder="Search by name, UHID, OPD no, phone..."
+        value={query}
+        onValueChange={setQuery}
       />
 
-      <CommandList className="max-h-[400px]">
-        <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">
-          No patients found.
-        </CommandEmpty>
+      <CommandList className="max-h-[400px] overflow-y-auto">
+        {loading && (
+          <div className="py-6 text-center text-sm text-muted-foreground">
+            Searching...
+          </div>
+        )}
 
-        <CommandGroup heading="Recent Patients" className="px-2">
-          {patients.map((patient) => (
-            <CommandItem
-              key={patient.id}
-              onSelect={() => handleSelectPatient(patient)}
-              className="flex items-center gap-3 px-3 py-3 cursor-pointer rounded-md aria-selected:bg-accent"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 dark:bg-blue-500/20">
-                <User className="h-5 w-5 text-primary dark:text-blue-400" />
-              </div>
+        {!loading && results.length === 0 && (
+          <CommandEmpty>No patients found.</CommandEmpty>
+        )}
 
-              <div className="flex-1 space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium text-foreground">
-                    {patient.name}
-                  </span>
-                  <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-                    {patient.id}
-                  </span>
+        {!loading && results.length > 0 && (
+          <CommandGroup heading="OPD Patients">
+            {results.map((o) => (
+              <CommandItem
+                key={o._id}
+                value={`${o.opdno} ${o.patient?.fname} ${o.patient?.mobileNumber}`}
+                onSelect={() => {
+                  setOpen(false);
+                  // router.push(`/opd/${o._id}`)
+                }}
+                className="flex items-center gap-3 px-3 py-3 cursor-pointer"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                  <User className="h-5 w-5 text-primary" />
                 </div>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Phone className="h-3 w-3" />
-                    {patient.phone}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
-                    {patient.lastVisit}
-                  </span>
+
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">
+                      {o.patient?.fname} {o.patient?.lname}
+                    </span>
+                    <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded">
+                      {o.opdno}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Phone className="h-3 w-3" />
+                      {o.patient?.mobileNumber || "-"}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Hash className="h-3 w-3" />
+                      {o.patient?.uhid}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </CommandItem>
-          ))}
-        </CommandGroup>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        )}
       </CommandList>
     </CommandDialog>
   );
