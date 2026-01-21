@@ -269,43 +269,54 @@ const PatientInfoPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Patient Information Card - Now a separate component */}
-        <PatientInfoCard patientData={patientData} />
+    <div className="min-h-[90vh] bg-background p-4 md:p-6 lg:p-8">
+      {patient ? (
+        <div className="max-w-7xl mx-auto space-y-6">
+          {/* Patient Information Card - Now a separate component */}
+          <PatientInfoCard patientData={patientData} />
 
-        {/* Medical Information Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <ChiefComplaint departmentId={patient.appointment.department._id} />
-          {medicalCards.map((card) => {
-            const IconComponent = card.icon;
-            return (
-              <Card key={card.id} className="flex flex-col">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <IconComponent className={`w-5 h-5 ${card.color}`} />
-                    <div className="flex-1">
-                      <CardTitle className="text-lg">{card.title}</CardTitle>
-                      <CardDescription className="text-xs">
-                        {card.description}
-                      </CardDescription>
+          {/* Medical Information Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <ChiefComplaint departmentId={patient.appointment.department._id} />
+            {medicalCards.map((card) => {
+              const IconComponent = card.icon;
+              return (
+                <Card key={card.id} className="flex flex-col">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <IconComponent className={`w-5 h-5 ${card.color}`} />
+                      <div className="flex-1">
+                        <CardTitle className="text-lg">{card.title}</CardTitle>
+                        <CardDescription className="text-xs">
+                          {card.description}
+                        </CardDescription>
+                      </div>
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {card.currentData}
-                  </p>
-                </CardContent>
-                <CardFooter className="flex gap-2">
-                  <InfoDrawer card={card} />
-                  <HistoryDrawer card={card} />
-                </CardFooter>
-              </Card>
-            );
-          })}
+                  </CardHeader>
+                  <CardContent className="flex-1">
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {card.currentData}
+                    </p>
+                  </CardContent>
+                  <CardFooter className="flex gap-2">
+                    <InfoDrawer card={card} />
+                    <HistoryDrawer card={card} />
+                  </CardFooter>
+                </Card>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="min-h-[80vh] bg-background flex items-center justify-center p-4">
+          <div className="text-center space-y-2">
+            <h2 className="text-xl font-semibold">Please select a patient</h2>
+            <p className="text-sm text-muted-foreground">
+              Select a patient to view EMR
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

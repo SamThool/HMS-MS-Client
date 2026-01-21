@@ -1,4 +1,3 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,28 +17,31 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { get, post } from "@/lib/api";
+// import { Input } from "@/components/ui/input";
+// import { get, post } from "@/lib/api";
 import { AlertCircle, FileText, History, Plus } from "lucide-react";
-import React, { useEffect } from "react";
+import React from "react";
 import ChiefComplaintDrawer from "./ChiefComplaintDrawer";
+import { useSelector } from "react-redux";
 
 const chiefComplaint = ({ departmentId }) => {
-  const [complaints, setComplaints] = React.useState([]);
-  const [newComplaint, setNewComplaint] = React.useState("");
-  const [editingIndex, setEditingIndex] = React.useState(null);
-  const [editingValue, setEditingValue] = React.useState("");
-  const [adding, setAdding] = React.useState(false);
+  // const [complaints, setComplaints] = React.useState([]);
+  // const [newComplaint, setNewComplaint] = React.useState("");
+  // const [editingIndex, setEditingIndex] = React.useState(null);
+  // const [editingValue, setEditingValue] = React.useState("");
+  // const [adding, setAdding] = React.useState(false);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
-  const fetchComplaints = async () => {
-    const res = await get(`/chief-complaint-master/department/${departmentId}`);
-    setComplaints(res?.data?.complaints || []);
-  };
+  // const { patient } = useSelector((state) => state.patient);
 
-  useEffect(() => {
-    fetchComplaints();
-  }, []);
+  // const fetchComplaints = async () => {
+  // const res = await get(`/chief-complaint-master/department/${departmentId}`);
+  // setComplaints(res?.data?.complaints || []);
+  // };
+
+  // useEffect(() => {
+  // fetchComplaints();
+  // }, []);
 
   let historyData = [
     "Jan 15: Headache, fatigue",
