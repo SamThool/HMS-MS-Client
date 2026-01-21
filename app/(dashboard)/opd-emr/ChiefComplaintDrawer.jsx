@@ -57,13 +57,7 @@ const ChiefComplaintDrawer = ({ open, onOpenChange, departmentId }) => {
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="max-h-[90vh]">
-        <div
-          className="
-  mx-auto w-full
-  max-w-full sm:max-w-3xl lg:max-w-4xl
-  px-2 sm:px-4
-"
-        >
+        <div className="mx-auto w-full max-w-full sm:max-w-3xl px-2 sm:px-4 flex flex-col h-full">
           <DrawerHeader className="flex flex-row items-center justify-between">
             {/* Left side */}
             <DrawerTitle className="flex items-center gap-2">
@@ -211,17 +205,35 @@ const ChiefComplaintDrawer = ({ open, onOpenChange, departmentId }) => {
             </TabsList>
 
             {/* Location */}
-            <TabsContent value="complaints" className="mt-4 space-y-2">
-              <MasterSuggestionPills
-                title="Chief Complaints"
-                field="complaints"
-                values={master.complaints}
-                departmentId={departmentId}
-                isEditing={isEditing}
-                onRefresh={fetchMaster}
-              />
-            </TabsContent>
-            <TabsContent value="location" className="mt-4 space-y-2">
+            <div className="flex-1 overflow-hidden">
+              <TabsContent
+                value="complaints"
+                className="
+    mt-4 space-y-2
+    max-h-[40vh]
+    overflow-y-auto
+    pr-1
+  "
+              >
+                <MasterSuggestionPills
+                  title="Chief Complaints"
+                  field="complaints"
+                  values={master.complaints}
+                  departmentId={departmentId}
+                  isEditing={isEditing}
+                  onRefresh={fetchMaster}
+                />
+              </TabsContent>
+            </div>
+            <TabsContent
+              value="location"
+              className="
+    mt-4 space-y-2
+    max-h-[40vh]
+    overflow-y-auto
+    pr-1
+  "
+            >
               {/* <Label>Location</Label> */}
               <MasterSuggestionPills
                 title="Location"
@@ -233,7 +245,15 @@ const ChiefComplaintDrawer = ({ open, onOpenChange, departmentId }) => {
               />
             </TabsContent>
 
-            <TabsContent value="description" className="mt-4 space-y-2">
+            <TabsContent
+              value="description"
+              className="
+    mt-4 space-y-2
+    max-h-[40vh]
+    overflow-y-auto
+    pr-1
+  "
+            >
               {/* <Label>Description</Label> */}
               <MasterSuggestionPills
                 title="Description"
@@ -245,7 +265,15 @@ const ChiefComplaintDrawer = ({ open, onOpenChange, departmentId }) => {
               />
             </TabsContent>
 
-            <TabsContent value="since" className="mt-4 space-y-2">
+            <TabsContent
+              value="since"
+              className="
+    mt-4 space-y-2
+    max-h-[40vh]
+    overflow-y-auto
+    pr-1
+  "
+            >
               {/* <Label>Since</Label> */}
               <MasterSuggestionPills
                 title="Since"
@@ -257,7 +285,15 @@ const ChiefComplaintDrawer = ({ open, onOpenChange, departmentId }) => {
               />
             </TabsContent>
 
-            <TabsContent value="treatment" className="mt-4 space-y-2">
+            <TabsContent
+              value="treatment"
+              className="
+    mt-4 space-y-2
+    max-h-[40vh]
+    overflow-y-auto
+    pr-1
+  "
+            >
               {/* <Label>Treatment</Label> */}
               <MasterSuggestionPills
                 title="Treatment"
@@ -269,7 +305,15 @@ const ChiefComplaintDrawer = ({ open, onOpenChange, departmentId }) => {
               />
             </TabsContent>
 
-            <TabsContent value="with" className="mt-4 space-y-2">
+            <TabsContent
+              value="with"
+              className="
+    mt-4 space-y-2
+    max-h-[40vh]
+    overflow-y-auto
+    pr-1
+  "
+            >
               {/* <Label>Associated With</Label> */}
               <MasterSuggestionPills
                 title="Associated With"
