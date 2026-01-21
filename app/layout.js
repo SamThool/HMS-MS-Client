@@ -2,11 +2,12 @@
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { Provider } from "react-redux";
-import { store } from "@/store/store";
+import { store, persistor } from "@/store/store";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { PersistGate } from "redux-persist/integration/react";
 
 export default function RootLayout({ children }) {
   const router = useRouter();
@@ -62,7 +63,9 @@ export default function RootLayout({ children }) {
           disableTransitionOnChange
         >
           <Provider store={store}>
-            {isCheckingAuth ? null : children}
+            <PersistGate loading={null} persistor={persistor}>
+              {isCheckingAuth ? null : children}
+            </PersistGate>
             {/* <>{children}</> */}
           </Provider>
           <Toaster position="top-right" richColors />

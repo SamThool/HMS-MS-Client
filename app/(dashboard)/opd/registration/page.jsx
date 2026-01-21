@@ -23,10 +23,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useDispatch } from "react-redux";
+import { setPatient } from "@/store/patientSlice";
 
 export default function Page() {
   const [opds, setOpds] = useState([]);
   const isMobile = useIsMobile();
+  const dispatch = useDispatch();
 
   const fetchOPD = async () => {
     try {
@@ -111,6 +114,13 @@ export default function Page() {
       </div>
     );
   }
+
+  const BillingClicked = (p) => {
+    dispatch(setPatient(p));
+  };
+  const EMRClicked = () => {
+    dispatch(setPatient({ p }));
+  };
 
   /* ---------------- DESKTOP TABLE ---------------- */
   return (
@@ -218,7 +228,13 @@ export default function Page() {
                         {/* Billing */}
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button size="icon" variant="secondary">
+                            <Button
+                              onClick={() => {
+                                BillingClicked(o);
+                              }}
+                              size="icon"
+                              variant="secondary"
+                            >
                               <Receipt className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
@@ -228,7 +244,13 @@ export default function Page() {
                         {/* EMR */}
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button size="icon" variant="secondary">
+                            <Button
+                              onClick={() => {
+                                EMRClicked(o);
+                              }}
+                              size="icon"
+                              variant="secondary"
+                            >
                               <FileText className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>

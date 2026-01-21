@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Activity,
@@ -30,8 +31,12 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import PatientInfoCard from "./patient-demography";
+import ChiefComplaint from "./ChiefComplaint";
+import { useSelector } from "react-redux";
 
 const PatientInfoPage = () => {
+  const { patient } = useSelector((state) => state.patient);
+
   const patientData = {
     name: "John Doe",
     id: "PT-2024-001",
@@ -53,6 +58,19 @@ const PatientInfoPage = () => {
   };
 
   const medicalCards = [
+    // {
+    //   id: "complaints",
+    //   title: "Chief Complaints",
+    //   icon: AlertCircle,
+    //   description: "Primary patient concerns",
+    //   color: "text-orange-500",
+    //   currentData: "Headache, fatigue for 3 days",
+    //   historyData: [
+    //     "Jan 15: Headache, fatigue",
+    //     "Jan 10: Mild fever",
+    //     "Dec 20: Cough",
+    //   ],
+    // },
     {
       id: "vitals",
       title: "Vitals",
@@ -66,19 +84,7 @@ const PatientInfoPage = () => {
         "Jan 5: BP 120/80, Pulse 72",
       ],
     },
-    {
-      id: "complaints",
-      title: "Chief Complaints",
-      icon: AlertCircle,
-      description: "Primary patient concerns",
-      color: "text-orange-500",
-      currentData: "Headache, fatigue for 3 days",
-      historyData: [
-        "Jan 15: Headache, fatigue",
-        "Jan 10: Mild fever",
-        "Dec 20: Cough",
-      ],
-    },
+
     {
       id: "medical-history",
       title: "Medical History",
@@ -270,6 +276,7 @@ const PatientInfoPage = () => {
 
         {/* Medical Information Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <ChiefComplaint departmentId={patient.appointment.department._id} />
           {medicalCards.map((card) => {
             const IconComponent = card.icon;
             return (

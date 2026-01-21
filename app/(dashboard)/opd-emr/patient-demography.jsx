@@ -1,5 +1,14 @@
+"use client";
 import React from "react";
-import { User, Phone, Mail, MapPin, AlertCircle, Shield } from "lucide-react";
+import {
+  User,
+  Phone,
+  Mail,
+  MapPin,
+  AlertCircle,
+  Shield,
+  IndianRupee,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -10,8 +19,27 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useSelector } from "react-redux";
 
 const PatientInfoCard = ({ patientData }) => {
+  const { patient } = useSelector((state) => state.patient);
+
+  function getAgeFromDOB(dobISO) {
+    if (!dobISO) return "";
+
+    const dob = new Date(dobISO);
+    const today = new Date();
+
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+
+    return age;
+  }
+
   return (
     <Card className="border-2">
       <CardHeader className="pb-3">
@@ -21,16 +49,21 @@ const PatientInfoCard = ({ patientData }) => {
               <User className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-2xl">{patientData.name}</CardTitle>
-              <CardDescription>Patient ID: {patientData.id}</CardDescription>
+              <CardTitle className="text-2xl">
+                {patient.patient.fname} {patient.patient.lname}
+              </CardTitle>
+              <CardDescription>
+                Patient UHID : {patient.patient.uhid}
+              </CardDescription>
             </div>
           </div>
           <div className="flex flex-col items-end gap-2">
             <Badge variant="outline" className="text-sm">
-              Last Visit: {patientData.lastVisit}
+              Last Visit: Jan 15, 2026
             </Badge>
             <Badge variant="secondary" className="text-xs">
-              Consultant: {patientData.physician}
+              Consultant: {patient.appointment.consultant.firstName}{" "}
+              {patient.appointment.consultant.lastName}
             </Badge>
           </div>
         </div>
@@ -41,11 +74,13 @@ const PatientInfoCard = ({ patientData }) => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
             <p className="text-xs text-muted-foreground mb-1">Age</p>
-            <p className="font-semibold">{patientData.age} years</p>
+            <p className="font-semibold">
+              {getAgeFromDOB(patient.patient.dob)} years
+            </p>
           </div>
           <div>
             <p className="text-xs text-muted-foreground mb-1">Gender</p>
-            <p className="font-semibold">{patientData.gender}</p>
+            <p className="font-semibold">{patient.patient.gender}</p>
           </div>
           <div>
             <p className="text-xs text-muted-foreground mb-1">Blood Group</p>
@@ -83,7 +118,9 @@ const PatientInfoCard = ({ patientData }) => {
             <Phone className="w-4 h-4 text-muted-foreground mt-0.5" />
             <div className="flex-1">
               <p className="text-xs text-muted-foreground mb-1">Contact</p>
-              <p className="font-semibold text-sm">{patientData.contact}</p>
+              <p className="font-semibold text-sm">
+                {patient.patient.mobileNumber}
+              </p>
             </div>
           </div>
           <div className="flex items-start gap-2">
@@ -99,7 +136,11 @@ const PatientInfoCard = ({ patientData }) => {
             <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
             <div className="flex-1">
               <p className="text-xs text-muted-foreground mb-1">Address</p>
-              <p className="font-semibold text-sm">{patientData.address}</p>
+              <p className="font-semibold text-sm">
+                {patient.patient.address} {patient.patient.pincode}{" "}
+                {patient.patient.city} {patient.patient.state} ,{" "}
+                {patient.patient.country}
+              </p>
             </div>
           </div>
         </div>
@@ -120,10 +161,12 @@ const PatientInfoCard = ({ patientData }) => {
             </div>
           </div>
           <div className="flex items-start gap-2">
-            <Shield className="w-4 h-4 text-blue-500 mt-0.5" />
+            <IndianRupee className="w-4 h-4 text-green-500 mt-0.5" />
             <div className="flex-1">
-              <p className="text-xs text-muted-foreground mb-1">Insurance</p>
-              <p className="font-semibold text-sm">{patientData.insurance}</p>
+              {/* <p className="text-xs text-muted-foreground mb-1">
+                {patient.category.name}
+              </p> */}
+              <p className="font-semibold text-sm"> {patient.category.name}</p>
             </div>
           </div>
         </div>
